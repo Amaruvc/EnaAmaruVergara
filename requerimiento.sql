@@ -1,7 +1,7 @@
 CREATE TABLE `usuario` (
-  `idusuario` int(11) NOT NULL,
+  `run` varchar(11) NOT NULL,
   `password` varchar(45) NOT NULL,
-  PRIMARY KEY (`idusuario`)
+  PRIMARY KEY (`run`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 CREATE TABLE `gerencia` (
@@ -36,11 +36,13 @@ CREATE TABLE `requerimiento` (
   `estado` tinyint(4) NOT NULL,
   `id_depto_origen` int(11) NOT NULL,
   `id_depto_asignado` int(11) NOT NULL,
+  `id_encargado` int(11) NOT NULL,
   PRIMARY KEY (`idrequerimiento`),
   KEY `fk_requerimiento_depto_origen_idx` (`id_depto_origen`),
   KEY `fk_req_depto_asignado_idx` (`id_depto_asignado`),
   CONSTRAINT `fk_req_depto_asignado` FOREIGN KEY (`id_depto_asignado`) REFERENCES `departamento` (`iddepartamento`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `fk_req_depto_origen` FOREIGN KEY (`id_depto_origen`) REFERENCES `departamento` (`iddepartamento`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  CONSTRAINT `fk_req_depto_origen` FOREIGN KEY (`id_depto_origen`) REFERENCES `departamento` (`iddepartamento`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `fk_req_encargado` FOREIGN KEY (`id_encargado`) REFERENCES `encargado` (`idencargado`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
@@ -75,5 +77,18 @@ VALUES ('Bill', 'Gates', 4),
 ('Zhang', 'Yiming', 4);
 
 
-INSERT INTO gerencia
-VALUES (123,'ena');
+INSERT INTO usuario
+VALUES ('12345678','ena');
+
+
+create or replace view v_requerimiento as
+select r.*, do.nombre as departamento_origen, do.presta_servicio as presta_servicio_origen, do.idgerencia as idgerencia_origen,
+da.nombre as departamento_asignado, da.presta_servicio as presta_servicio_asignado, da.idgerencia as idgerencia_asignado,
+go.nombre as gerencia_origen, ga.nombre as gerencia_asignado, e.nombre as nombre_encargado, e.apellido as apellido_encargado
+from requerimiento r inner join departamento do on r.id_depto_origen = do.iddepartamento
+inner join departamento da on r.id_depto_asignado = da.iddepartamento
+inner join gerencia go on do.idgerencia = go.idgerencia
+inner join gerencia ga on da.idgerencia = ga.idgerencia
+inner join encargado e on r.id_encargado = e.idencargado;
+
+
