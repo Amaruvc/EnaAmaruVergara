@@ -2,13 +2,13 @@ CREATE TABLE `usuario` (
   `run` varchar(11) NOT NULL,
   `password` varchar(45) NOT NULL,
   PRIMARY KEY (`run`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+);
 
 CREATE TABLE `gerencia` (
   `idgerencia` int(11) NOT NULL AUTO_INCREMENT,
   `nombre` varchar(45) NOT NULL,
   PRIMARY KEY (`idgerencia`)
-) ENGINE=InnoDB AUTO_INCREMENT=124 DEFAULT CHARSET=latin1;
+);
 
 CREATE TABLE `departamento` (
   `iddepartamento` int(11) NOT NULL AUTO_INCREMENT,
@@ -18,7 +18,7 @@ CREATE TABLE `departamento` (
   PRIMARY KEY (`iddepartamento`),
   KEY `fk_depto_gerencia_idx` (`idgerencia`),
   CONSTRAINT `fk_depto_gerencia` FOREIGN KEY (`idgerencia`) REFERENCES `gerencia` (`idgerencia`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=latin1;
+);
 
 CREATE TABLE `encargado` (
   `idencargado` int(11) NOT NULL AUTO_INCREMENT,
@@ -28,7 +28,7 @@ CREATE TABLE `encargado` (
   PRIMARY KEY (`idencargado`),
   KEY `fk_encargado_departamento_idx` (`iddepartamento`),
   CONSTRAINT `fk_encargado_departamento` FOREIGN KEY (`iddepartamento`) REFERENCES `departamento` (`iddepartamento`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=latin1;
+);
 
 CREATE TABLE `requerimiento` (
   `idrequerimiento` int(11) NOT NULL AUTO_INCREMENT,
@@ -43,7 +43,7 @@ CREATE TABLE `requerimiento` (
   CONSTRAINT `fk_req_depto_asignado` FOREIGN KEY (`id_depto_asignado`) REFERENCES `departamento` (`iddepartamento`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_req_depto_origen` FOREIGN KEY (`id_depto_origen`) REFERENCES `departamento` (`iddepartamento`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_req_encargado` FOREIGN KEY (`id_encargado`) REFERENCES `encargado` (`idencargado`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+);
 
 
 INSERT INTO gerencia (nombre)
