@@ -4,6 +4,8 @@
     Author     : amaru
 --%>
 
+<%@page import="dao.EncargadoDAO"%>
+<%@page import="modelos.Encargado"%>
 <%@page import="dao.RequerimientoDAO"%>
 <%@page import="modelos.Requerimiento"%>
 <%@page import="dao.DepartamentoDAO"%>
@@ -36,7 +38,7 @@
                 ArrayList<Requerimiento> requerimientos = rd.obtenerRequerimientos();
                 String idGerencia = request.getParameter("idGerencia");
                 String id_depto_origen = request.getParameter("id_depto_origen");
-                String id_depto_asignado = request.getParameter("id_depto_asignado");
+                String idEncargado = request.getParameter("idEncargado");
             %>
             
         <nav class="navbar is-info" role="navigation" aria-label="main navigation">
@@ -91,16 +93,14 @@
                     <label class="label">Asignado a</label>
                     <div class="control">
                         <div class="select is-info is-fullwidth">
-                            <select name="id_depto_asignado">
+                            <select name="idEncargado">
                                 <option value="0">Todos</option>
-                                    <% ArrayList<Departamento> departamentosServicio = new DepartamentoDAO().obtenerDepartamentos(); 
-                                    for(Departamento d:departamentosServicio){
-                                        if(d.isPrestaServicio()){  %>
-                                <option value="<%= d.getIdDepartamento() %>" <% if(id_depto_asignado != null && d.getIdDepartamento()== Integer.parseInt(id_depto_asignado)){ %>selected="true"<%}%>>
-                                    <%= d %>
-                                </option>
-                                        <% } 
-                                    } %>
+                                    <% ArrayList<Encargado> encargados = new EncargadoDAO().obtenerEncargados(); 
+                                    for(Encargado e:encargados){  %>
+                                <option value="<%= e.getIdEncargado() %>" <% if(idEncargado != null && e.getIdEncargado() == Integer.parseInt(idEncargado)){ %> selected="true" <%}%>>
+                                    <%= e %>
+                                </option> 
+                                   <% } %>
                             </select>
                         </div>
                     </div>
@@ -120,8 +120,8 @@
                   <tr>
                     <th>Gerencia</th>
                     <th>Departamento</th>
+                    <th>Departamento asignado</th>
                     <th>Asignado a</th>
-                    <th>Encargado a</th>
                     <th>Requerimiento</th>
                     <th>Estado</th>
                   </tr>
@@ -133,7 +133,7 @@
                 for(Requerimiento r: requerimientos) {
                     if(idGerencia == null || idGerencia.equals("0") || r.getDeptoOrigen().getGerencia().getIdGerencia() == Integer.parseInt(idGerencia)){
                         if(id_depto_origen == null  || id_depto_origen.equals("0") || r.getDeptoOrigen().getIdDepartamento() == Integer.parseInt(id_depto_origen)){
-                            if(id_depto_asignado == null  || id_depto_asignado.equals("0") || r.getDeptoAsignado().getIdDepartamento() == Integer.parseInt(id_depto_asignado)){
+                            if(idEncargado == null  || idEncargado.equals("0") || r.getEncargado().getIdEncargado() == Integer.parseInt(idEncargado)){
                 %>
                 <tr> 
                     <td><%= r.getDeptoOrigen().getGerencia().getNombre() %></td>
@@ -143,11 +143,7 @@
                     <td><%= r.getDescripcion()  %></td>
                     <td><%= r.isEstado()? "Cerrado":"Abierto" %></td>
                 </tr>
-                <% if (requerimientos.isEmpty()) { %>
-                <tr>
-                    <td colSpan="6">No hay productos ingresados</td>
-                </tr>
-                <% } 
+                <%
 
                             }
                         }
